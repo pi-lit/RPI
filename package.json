@@ -1,0 +1,10 @@
+{
+  "name": "pi-lit-pi-server",
+  "version": "0.0.1",
+  "description": "Pi-Lit Pi Server",
+  "dependencies": {
+    "express": "^4.15.2",
+    "socket.io": "^2.1.1",
+    "public-ip": "^3.0.0"
+  }
+}

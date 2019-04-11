@@ -1,0 +1,4 @@
+{
+    "serverAddress": "https://pi-lit.herokuapp.com",
+    "pi": {"piName":"testpi", "userName":"testuser", "password":"password"}
+}
