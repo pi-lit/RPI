@@ -29,10 +29,16 @@ socket.on('loginPi', function(res) {
 	}
 
 	socket.on('command', function(req) {
-		console.log(req);
-
+		if (req.config.hasOwnProperty('commandArray')){
+			req.config.commandArray.forEach(function(command){
+				console.log(JSON.stringify(command));
+			});
+		} else {
+			req.config.forEach(function(command){
+				console.log(JSON.stringify(command));
+			})
+		}
 		req.error = "";
-
 		socket.emit('command', req);
 	});
 
