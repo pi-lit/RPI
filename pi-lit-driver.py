@@ -43,9 +43,9 @@ def listenForJson():
 			return 1
 
 #color solid
-def colorSolid(range, r, g, b):
+def colorSolid(rangeFromCommand, r, g, b):
 	for i in range(150):
-		for pixel in range:
+		for pixel in rangeFromCommand:
 			LED_STATE_CACHE[i][pixel] = str(r) + '#' + str(g) + '#' + str(b)
 		
 
