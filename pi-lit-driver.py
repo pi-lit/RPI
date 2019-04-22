@@ -42,6 +42,19 @@ def listenForJson():
 		else:
 			return 1
 
+def listenForJsonNew():
+	while True:
+		commandObjStr = input()
+		command = json.loads(commandObjStr)
+		print(command)
+		if command['effect'] == "solid":
+			colorSolid(command['range'],command['color']['r'], command['color']['g'], command['color']['b'])
+		elif command['effect'] == "custom":
+			populateBufferFromCustomCommand(command)
+			loadCacheFromBuffer()
+		else:
+			print(1)
+
 #color solid
 def colorSolid(rangeFromCommand, r, g, b):
 	for i in range(150):
@@ -89,14 +102,14 @@ def runStrip(strip):
 		print('Start loop')
 		for refreshCounter in range(150):
 			ledrep = ''
-			print('Refresh: ', refreshCounter)
+			#print('Refresh: ', refreshCounter)
 			for pixel in range(30):
 				ledrep += LED_STATE_CACHE[refreshCounter][pixel]
 				rgbVals = LED_STATE_CACHE[refreshCounter][pixel].split('#')
 				#using ws281x
-				strip.setPixelColorRGB(pixel, rgbVals[0], rgbVals[1], rgbVals[2])
+				strip.setPixelColorRGB(pixel,int(rgbVals[0]), int(rgbVals[1]), int(rgbVals[2]))
 				strip.show()
-			print(ledrep)
+			#print(ledrep)
 		time.sleep(0.062)
 
 
@@ -112,10 +125,11 @@ if __name__ == '__main__':
 	populateBufferFromCustomCommand(parsedJson[2])
 	loadCacheFromBuffer()
 
-	#t1 = threading.Thread(target=listenForJson)
+	t1 = threading.Thread(target=listenForJsonNew)
 	t2 = threading.Thread(target=runStrip, args=(strip, ))
-	testThread = threading.Thread(target=colorSolid, args=([0,1,2,3,4,5,6,7,8,9,10], 255, 0, 0))
+	#testThread = threading.Thread(target=colorSolid, args=([0,1,2,3,4,5,6,7,8,9,10], 255, 0, 0))
 
+	t1.start()
 	t2.start()
-	testThread.start()
+	#testThread.start()
 
