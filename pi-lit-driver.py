@@ -1,4 +1,4 @@
-# python inports
+## python inports
 import time
 import argparse
 import json
@@ -28,40 +28,91 @@ LED_STATE_CACHE = []
 COMMAND_BUFFER = {}
 
 #Listen for JSON input
-def listenForJson():
-	commandObjString = input()
-	commandObjParsed = json.loads(commandObjString)
-	configObj = commandObjParsed['config']
-	commandArray = commandObjParsed['config']['commandArray']
-	print(commandArray)
-	for i in range(len(commandArray)):
-		if commandArray[i]['effect'] == 'custom':
-			populateBufferFromCustomCommand(commandArray[i])
-		elif commandArray[i]['effect'] == 'solid':
-			colorSolid(commandArray[i]['range'], commandArray[i]['range']['color']['r'], commandArray[i]['range']['color']['g'], commandArray[i]['range']['color']['b'])
-		else:
-			return 1
-
 def listenForJsonNew():
 	while True:
 		commandObjStr = input()
 		command = json.loads(commandObjStr)
 		print(command)
-		if command['effect'] == "solid":
+		if (command['effect'] == "solid"):
 			colorSolid(command['range'],command['color']['r'], command['color']['g'], command['color']['b'])
-		elif command['effect'] == "custom":
+		elif (command['effect'] == "custom"):
 			populateBufferFromCustomCommand(command)
 			loadCacheFromBuffer()
-		else:
-			print(1)
+		elif (command['effect'] == "flash"):
+			colorFlash(command['range'],command['color']['r'], command['color']['g'], command['color']['b'])
+		elif (command['effect'] == "rainbow"):
+			colorRainbow(command['range'])
 
 #color solid
 def colorSolid(rangeFromCommand, r, g, b):
 	for i in range(150):
 		for pixel in rangeFromCommand:
 			LED_STATE_CACHE[i][pixel] = str(r) + '#' + str(g) + '#' + str(b)
-		
 
+def colorFlash(rangeFromCommand, r, g, b):
+	for i in range(15):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' str(g) + '#' str(b)
+	for i in range(15, 30):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(30, 45):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' str(g) + '#' str(b)
+	for i in range(45, 60):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(60, 75):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' str(g) + '#' str(b)
+	for i in range(75, 90):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(90, 105):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' str(g) + '#' str(b)
+	for i in range(105, 120):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(120, 135):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' str(g) + '#' str(b)
+	for i in range(135, 150):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+
+
+def colorRainbow(rangeFromCommand):
+	for i in range(15):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '255#0#0'1
+	for i range(15, 30):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '255#165#0'
+	for i range(30, 45):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '255#255#0'
+	for i in range(45, 60):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '0#255#0'
+	for i in range(60, 75):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '0#0#255'
+	for i in range(75, 90):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '75#0#130'
+	for i in range(90, 105):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '128#0#128'
+	for i in range(105, 120):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '255#0#0'
+	for i in range(120, 135):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '0#255#0'
+	for i in range(135, 150):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = '0#0#255'
 
 #initialize the led strip refresh cache with all white LED's
 def initStateCache():
