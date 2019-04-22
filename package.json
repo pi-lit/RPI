@@ -4,7 +4,8 @@
   "description": "Pi-Lit Pi Server",
   "dependencies": {
     "express": "^4.15.2",
+    "public-ip": "^3.0.0",
     "socket.io": "^2.1.1",
-    "public-ip": "^3.0.0"
+    "socket.io-client": "^2.2.0"
   }
 }
