@@ -42,6 +42,20 @@ socket.on('loginPi', function(res) {
 		socket.emit('command', req);
 	});
 
+	socket.on('voiceCommand', function(req) {
+		if(req.config.hasOwnProperty('commandArray')){
+			req.config.commandArray.forEach(function(command){
+				console.log(JSON.stringify(command));
+			});
+		} else {
+			req.config.forEach(function(command){
+				console.log(JSON.stringify(command));
+			});
+		}
+		req.error = "";
+		socket.emit('voiceCommand', "Success");
+	});
+
 	//console.log("successfull login");
 	//console.log("waiting for commands...");
 });
