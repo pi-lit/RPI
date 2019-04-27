@@ -72,7 +72,7 @@ socket.on('loginPi', function(res) {
 });
 
 if(pi == undefined) {
-	macaddress.one('wlp2s0', (err, mac) => {
+	macaddress.one(config.iface, (err, mac) => {
 		console.log(mac);
 
 		pi = {mac: mac};
