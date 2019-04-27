@@ -2,9 +2,11 @@
 
 var io = require('socket.io-client');
 var config = require("./config.json");
+var macaddress = require("macaddress");
+var fs = require('fs');
 
-var serverAddress = "http://localhost:8080";
-//var serverAddress = config.serverAddress;
+//var serverAddress = "http://localhost:8080";
+var serverAddress = config.serverAddress;
 var pi = config.pi;
 
 var socket = io.connect(serverAddress);
@@ -22,6 +24,15 @@ socket.on('disconnect', function() {
 	process.exit();
 });
 
+socket.on('registerPi', function(req) {
+	//console.log('register pi event:');
+	//console.log(req);
+
+	config.pi = req;
+
+	fs.writeFileSync('config.json', JSON.stringify(config), 'utf8');
+});
+
 socket.on('loginPi', function(res) {
 	if(res.error) {
 		console.log("error: failed to login : "+res);
@@ -29,10 +40,6 @@ socket.on('loginPi', function(res) {
 	}
 
 	socket.on('command', function(req) {
-<<<<<<< HEAD
-		console.log(req.config);
-
-=======
 		if (req.config.hasOwnProperty('commandArray')){
 			req.config.commandArray.forEach(function(command){
 				console.log(JSON.stringify(command));
@@ -42,7 +49,6 @@ socket.on('loginPi', function(res) {
 				console.log(JSON.stringify(command));
 			})
 		}
->>>>>>> a8a463beb85879622638460b1d8edf76f7a2b52a
 		req.error = "";
 		socket.emit('command', req);
 	});
@@ -65,4 +71,14 @@ socket.on('loginPi', function(res) {
 	//console.log("waiting for commands...");
 });
 
-socket.emit('loginPi', pi);
+if(pi == undefined) {
+	macaddress.one('wlp2s0', (err, mac) => {
+		console.log(mac);
+
+		pi = {mac: mac};
+		socket.emit('loginPi', pi);
+	});
+}
+else {
+	socket.emit('loginPi', pi);
+}
