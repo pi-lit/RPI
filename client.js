@@ -29,11 +29,36 @@ socket.on('loginPi', function(res) {
 	}
 
 	socket.on('command', function(req) {
+<<<<<<< HEAD
 		console.log(req.config);
 
+=======
+		if (req.config.hasOwnProperty('commandArray')){
+			req.config.commandArray.forEach(function(command){
+				console.log(JSON.stringify(command));
+			});
+		} else {
+			req.config.forEach(function(command){
+				console.log(JSON.stringify(command));
+			})
+		}
+>>>>>>> a8a463beb85879622638460b1d8edf76f7a2b52a
 		req.error = "";
-
 		socket.emit('command', req);
+	});
+
+	socket.on('voiceCommand', function(req) {
+		if(req.config.hasOwnProperty('commandArray')){
+			req.config.commandArray.forEach(function(command){
+				console.log(JSON.stringify(command));
+			});
+		} else {
+			req.config.forEach(function(command){
+				console.log(JSON.stringify(command));
+			});
+		}
+		req.error = "";
+		socket.emit('voiceCommand', "Success");
 	});
 
 	//console.log("successfull login");

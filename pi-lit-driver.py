@@ -1,4 +1,4 @@
-# python inports
+## python inports
 import time
 import argparse
 import json
@@ -7,7 +7,17 @@ import os
 import math
 
 # rpi library import
-# from rpi_ws281x import *
+from rpi_ws281x import *
+
+# strip variables
+LED_COUNT = 30
+LED_PIN = 18
+LED_FREQ_HZ = 800000
+LED_DMA = 10
+LED_BRIGHTNESS = 255
+LED_INVERT = False
+LED_CHANNEL = 0
+
 
 #states
 OFF = '0#0#0'
@@ -16,6 +26,93 @@ WHITE = '255#255#255'
 # globals
 LED_STATE_CACHE = []
 COMMAND_BUFFER = {}
+
+#Listen for JSON input
+def listenForJsonNew():
+	while True:
+		commandObjStr = input()
+		command = json.loads(commandObjStr)
+		print(command)
+		if (command['effect'] == "solid"):
+			colorSolid(command['range'],command['color']['r'], command['color']['g'], command['color']['b'])
+		elif (command['effect'] == "custom"):
+			populateBufferFromCustomCommand(command)
+			loadCacheFromBuffer()
+		elif (command['effect'] == "flash"):
+			colorFlashPopulate(command['range'],command['color']['r'], command['color']['g'], command['color']['b'])
+#		elif (command['effect'] == "rainbow"):
+#			colorRainbow(command['range'])
+
+#color solid
+def colorSolid(rangeFromCommand, r, g, b):
+	for i in range(150):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' + str(g) + '#' + str(b)
+
+def colorFlashPopulate(rangeFromCommand, r, g, b):
+	for i in range(15):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' +  str(g) + '#' + str(b)
+	for i in range(15, 30):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(30, 45):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' +  str(g) + '#' +  str(b)
+	for i in range(45, 60):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(60, 75):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' +  str(g) + '#' +  str(b)
+	for i in range(75, 90):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(90, 105):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' +  str(g) + '#' + str(b)
+	for i in range(105, 120):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+	for i in range(120, 135):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = str(r) + '#' + str(g) + '#' +  str(b)
+	for i in range(135, 150):
+		for pixel in rangeFromCommand:
+			LED_STATE_CACHE[i][pixel] = OFF
+
+
+#def colorRainbow(rangeFromCommand):
+#	for i in range(15):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '255#0#0'1
+#	for i range(15, 30):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '255#165#0'
+#	for i range(30, 45):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '255#255#0'
+#	for i in range(45, 60):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '0#255#0'
+#	for i in range(60, 75):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '0#0#255'
+#	for i in range(75, 90):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '75#0#130'
+#	for i in range(90, 105):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '128#0#128'
+#	for i in range(105, 120):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '255#0#0'
+#	for i in range(120, 135):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '0#255#0'
+#	for i in range(135, 150):
+#		for pixel in rangeFromCommand:
+#			LED_STATE_CACHE[i][pixel] = '0#0#255'
 
 #initialize the led strip refresh cache with all white LED's
 def initStateCache():
@@ -51,19 +148,19 @@ def loadCacheFromBuffer():
 			LED_STATE_CACHE[refresh][i] = currentColor
 		
 
-def runStrip():
+def runStrip(strip):
 	while True:
 		print('Start loop')
 		for refreshCounter in range(150):
 			ledrep = ''
-			print('Refresh: ', refreshCounter)
+			#print('Refresh: ', refreshCounter)
 			for pixel in range(30):
 				ledrep += LED_STATE_CACHE[refreshCounter][pixel]
 				rgbVals = LED_STATE_CACHE[refreshCounter][pixel].split('#')
 				#using ws281x
-				#strip.setPixelColorRGB(pixel, rgbVals[0], rgbVals[1], rgbVals[2])
-				#strip.show()
-			print(ledrep)
+				strip.setPixelColorRGB(pixel,int(rgbVals[0]), int(rgbVals[1]), int(rgbVals[2]))
+				strip.show()
+			#print(ledrep)
 		time.sleep(0.062)
 
 
@@ -71,8 +168,19 @@ if __name__ == '__main__':
 	sampleFileLink = open('sample.JSON', 'r')
 	sampleFile = sampleFileLink.read()
 	parsedJson = json.loads(sampleFile)
+	
+	strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+	strip.begin()
+	
 	initStateCache()
-	populateBufferFromCustomCommand(parsedJson[2])
-	loadCacheFromBuffer()
-	runStrip()
+	#populateBufferFromCustomCommand(parsedJson[2])
+	#loadCacheFromBuffer()
+
+	t1 = threading.Thread(target=listenForJsonNew)
+	t2 = threading.Thread(target=runStrip, args=(strip, ))
+	#testThread = threading.Thread(target=colorSolid, args=([0,1,2,3,4,5,6,7,8,9,10], 255, 0, 0))
+
+	t1.start()
+	t2.start()
+	#testThread.start()
 
