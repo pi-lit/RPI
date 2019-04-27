@@ -3,8 +3,8 @@
 var io = require('socket.io-client');
 var config = require("./config.json");
 
-//var serverAddress = "http://localhost:8080";
-var serverAddress = config.serverAddress;
+var serverAddress = "http://localhost:8080";
+//var serverAddress = config.serverAddress;
 var pi = config.pi;
 
 var socket = io.connect(serverAddress);
@@ -29,7 +29,7 @@ socket.on('loginPi', function(res) {
 	}
 
 	socket.on('command', function(req) {
-		console.log(req);
+		console.log(req.config);
 
 		req.error = "";
 
