@@ -82,37 +82,8 @@ def colorFlashPopulate(rangeFromCommand, r, g, b):
 			LED_STATE_CACHE[i][pixel] = OFF
 
 
-#def colorRainbow(rangeFromCommand):
-#	for i in range(15):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '255#0#0'1
-#	for i range(15, 30):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '255#165#0'
-#	for i range(30, 45):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '255#255#0'
-#	for i in range(45, 60):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '0#255#0'
-#	for i in range(60, 75):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '0#0#255'
-#	for i in range(75, 90):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '75#0#130'
-#	for i in range(90, 105):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '128#0#128'
-#	for i in range(105, 120):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '255#0#0'
-#	for i in range(120, 135):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '0#255#0'
-#	for i in range(135, 150):
-#		for pixel in rangeFromCommand:
-#			LED_STATE_CACHE[i][pixel] = '0#0#255'
+def displayRainbow(range):
+	print('Debug')
 
 #initialize the led strip refresh cache with all white LED's
 def initStateCache():
