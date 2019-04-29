@@ -26,6 +26,7 @@ WHITE = '255#255#255'
 # globals
 LED_STATE_CACHE = []
 COMMAND_BUFFER = {}
+RAINBOW_REF = ['255#0#0', '255#165#0', '255#255#0', '0#255#0', '0#0#255', '128#0#128']
 
 #Listen for JSON input
 def listenForJsonNew():
@@ -40,8 +41,8 @@ def listenForJsonNew():
 			loadCacheFromBuffer()
 		elif (command['effect'] == "flash"):
 			colorFlashPopulate(command['range'],command['color']['r'], command['color']['g'], command['color']['b'])
-#		elif (command['effect'] == "rainbow"):
-#			colorRainbow(command['range'])
+		elif (command['effect'] == "rainbow"):
+			displayRainbow(command['range'])
 
 #color solid
 def colorSolid(rangeFromCommand, r, g, b):
@@ -82,8 +83,77 @@ def colorFlashPopulate(rangeFromCommand, r, g, b):
 			LED_STATE_CACHE[i][pixel] = OFF
 
 
-def displayRainbow(range):
-	print('Debug')
+def displayRainbow(rangeFromCommandRainbow):
+	colorGroups = []
+	for i in range(7):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[0]
+	for i in range(7, 15):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[1]
+	for i in range(15, 21):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[2]
+	for i in range(21, 29):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[3]
+	for i in range(29, 36):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[4]
+	for i in range(36, 42):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[5]
+	for i in range(42, 49):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[0]
+	for i in range(49, 57):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[1]
+	for i in range(57, 64):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[2]
+	for i in range(64, 71):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[3]
+	for i in range(71, 79):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[4]
+	for i in range(79, 86):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[5]
+	for i in range(86, 73):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[0]
+	for i in range(73, 81):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[1]
+	for i in range(81, 88):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[2]
+	for i in range(88, 95):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[3]
+	for i in range(95, 102):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[4]
+	for i in range(102, 111):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[5]
+	for i in range(111, 119):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[0]
+	for i in range(119, 126):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[1]
+	for i in range(126, 133):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[2]
+	for i in range(133, 140):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[3]
+	for i in range(140, 150):
+		for p in rangeFromCommandRainbow:
+			LED_STATE_CACHE[i][p] = RAINBOW_REF[4]
 
 #initialize the led strip refresh cache with all white LED's
 def initStateCache():
@@ -104,7 +174,7 @@ def populateBufferFromCustomCommand(customCommand):
 		g = timeStamp['color']['g']
 		b = timeStamp['color']['b']
 		colorStr = str(r) + '#' + str(g) + '#' + str(b)
-		refreshForCache = int(math.floor(timeStamp['time'] * 15) / 1000)
+		refreshForCache = math.floor((int(timeStamp['time']) * 15) / 1000)
 		COMMAND_BUFFER[refreshForCache] = {"LED_RANGE" : ledRange, "COLOR" : colorStr}
 
 	
@@ -121,7 +191,7 @@ def loadCacheFromBuffer():
 
 def runStrip(strip):
 	while True:
-		print('Start loop')
+		#print('Start loop')
 		for refreshCounter in range(150):
 			ledrep = ''
 			#print('Refresh: ', refreshCounter)
