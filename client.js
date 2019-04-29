@@ -73,7 +73,7 @@ socket.on('loginPi', function(res) {
 
 if(pi == undefined) {
 	macaddress.one(config.iface, (err, mac) => {
-		console.log(mac);
+		//console.log(mac);
 
 		pi = {mac: mac};
 		socket.emit('loginPi', pi);

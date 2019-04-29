@@ -1,1 +1,1 @@
-{"serverAddress":"https://pi-lit.herokuapp.com","iface":"wlp2s0","pi":{"_id":"5cc3d4998ed9d545e69d5032","piName":"testpi","userName":"testuser","password":"password","__v":0}}
+{"serverAddress":"https://pi-lit.herokuapp.com","iface":"wlan0","pi":{"_id":"5cc632c1e2505256e93db6ae","userName":"testuser","piName":"testpi","description":"Default description","ledNum":30,"password":"password","__v":0}}
